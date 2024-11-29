@@ -1,0 +1,62 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "branchPrefix": "renovate/",
+  "baseBranches": ["main", "test-1"],
+  "ignoreTests": true,
+  "automergeType": "pr",
+  "automerge": true,
+  "enabledManagers": ["dockerfile", "tekton"],
+  "dockerfile": {
+    "enabled": true
+  },
+  "tekton": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["dockerfile"],
+      "matchBaseBranches": ["main"],
+      "matchFileNames": ["*Dockerfile.konflux*"],
+      "matchUpdateTypes": ["digest"],
+      "ignoreTests": true,
+      "automergeType": "pr",
+      "automerge": true,
+      "enabled": true,
+      "groupName": "Dockerfile Digest Updates - Main",
+      "branchPrefix": "renovate/docker-main/",
+      "semanticCommits": "enabled",
+      "schedule": ["at any time"],
+      "automergeSchedule": ["at any time"]
+    },
+    {
+      "matchManagers": ["dockerfile"],
+      "enabled": false,
+      "matchUpdateTypes": ["major", "minor", "pin", "pinDigest", "patch", "bump"]
+    },
+    {
+      "matchManagers": ["tekton"],
+      "matchBaseBranches": ["test-1"],
+      "matchFileNames": ["**/.tekton/**/*.yaml", "**/.tekton/**/*.yml"],
+      "matchUpdateTypes": ["digest"],
+      "ignoreTests": true,
+      "automergeType": "pr",
+      "automerge": true,
+      "enabled": true,
+      "groupName": "Tekton Updates - test-1",
+      "branchPrefix": "renovate/tekton-test-1/",
+      "semanticCommits": "enabled",
+      "prFooter": "To execute skipped test pipelines write comment `/ok-to-test`",
+      "matchPackageNames": [
+        "/^quay.io/redhat-appstudio-tekton-catalog//",
+        "/^quay.io/konflux-ci/tekton-catalog//"
+      ],
+      "schedule": ["at any time"]
+    },
+    {
+      "matchManagers": ["tekton"],
+      "enabled": false,
+      "matchUpdateTypes": ["major", "minor", "pin", "pinDigest", "patch", "bump"]
+    }
+  ]
+}
